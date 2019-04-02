@@ -1,0 +1,266 @@
+\documentclass[10pt]{beamer}
+
+\usetheme[progressbar=frametitle]{metropolis}
+\usepackage{appendixnumberbeamer}
+\usepackage{setspace}
+\usepackage{booktabs}
+\usepackage[scale=2]{ccicons}
+
+\usepackage{pgfplots}
+\usepgfplotslibrary{dateplot}
+
+\usepackage{xspace}
+\newcommand{\themename}{\textbf{\textsc{metropolis}}\xspace}
+
+\setbeamercolor{block body}{bg=mDarkTeal!30}
+\setbeamercolor{block title}{bg=mDarkTeal,fg=black!2}
+
+\theoremstyle{definition} % insert bellow all blocks you want in normal text
+\newtheorem*{idea}{Proof idea} % no numbered block
+\newtheorem*{proposition}{Proposition} % no numbered block
+
+\title{Reproducing Kernel Hilbert Spaces}
+\subtitle{Frames \& wavelets
+}
+\date{\today}
+\author{Daniel Perdices}
+\institute{Wavelets and Signal Processing
+
+\vspace{0.5em}
+Master's Degree in Mathematics and Applications
+
+\vspace{0.5em}
+Universidad Aut\'onoma de Madrid
+\vspace{3.5em}
+
+{
+Source code avalaible in: \url{https://github.com/Darktris/slides-rkhs}
+}
+}
+% \titlegraphic{\hfill\includegraphics[height=1.5cm]{logo.pdf}}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+
+\begin{document}
+
+\maketitle
+
+\begin{frame}{Table of contents}
+ \vfill
+  \setbeamertemplate{section in toc}[sections unnumbered]
+  \tableofcontents[hideallsubsections]
+\end{frame}
+
+\section{Part I: Definition and Basic Properties}
+
+\begin{frame}{Definition}
+\framesubtitle{Evaluation functional}
+
+\begin{definition}[RKHS]
+Let $X$ be a topological space and $\mathcal{H}$ be a Hilbert space of functions from X to $\mathbb{R}$ or $\mathbb{C}$. $\mathcal{H}$ is called a Reproducing Kernel Hilbert Space (RKHS) iff the evaluation functional $\delta_x (f) := f(x)$ in every $x \in X$ is \textbf{continuous} in $\mathcal{H}$, i.e. for any $x \in X$ we have that
+$$ \exists M > 0\quad |\delta_x(f)| \leq M \norm{f}_{\mathcal{H}} $$
+\end{definition}
+Remark: this means that $\delta_x \in \mathcal{H}^* = \mathcal{B(\mathcal{H}, \mathbb{C}})$
+\begin{corollary}[Convergence in $\mathcal{H}$ $\implies$ pointwise convergence]
+If $f_n \overset{\mathcal{H}}{\rightarrow} f$, then $f_n(x) \rightarrow f(x) $ for any $x\in X$
+\end{corollary}
+\end{frame}
+
+\begin{frame}{Definition}
+\framesubtitle{Evaluation functional}
+
+\begin{definition}[Kernel, Feature map and Feature space]
+Let $X$ be a non-empty set. $k: X \times X \to \mathbb{C}$ is  a \textbf{kernel} if there exists a Hilbert space $\mathcal{G}$ and a map $\phi: X \to \mathcal{G}$ so that
+$$ k(x,x') = \langle \phi(x'), \phi(x) \rangle_{\mathcal{G}}$$
+
+$\phi$ is called \textbf{feature map} and $\mathcal{G}$ \textbf{feature space}.
+\end{definition}
+
+\begin{corollary}[Kernel properties]
+If $k$ is a kernel, then the following properties hold
+\begin{enumerate}
+    \item (symmetry, hermitian) $k(x,y) = \overline{k(y,x)}$
+    \item (positive definite) for any $n\in \mathbb{N}$, $\alpha_i \in \mathbb{C}$ and $ x_i \in X$, $i=1, \dots, n$.
+    
+    $$ \sum_{i=1}^n \sum_{j=1}^n \alpha_i \alpha_j k(x_i, x_j) \geq 0$$
+\end{enumerate}
+\end{corollary}
+\end{frame}
+
+\begin{frame}{Reproducing kernel}
+\begin{definition}[Reproducing kernel]
+Let $X$ be a non-empty set. $k: X \times X \to \mathbb{C}$ is  a \textbf{reproducing kernel} of $\mathcal{H}$ (Hilbert space) if
+\begin{itemize}
+    \item (Canonical feature map) $\phi(x) = k(\cdot,x) \in \mathcal{H}$
+    \item (Reproducing property) $f(x) = \langle f, k(\cdot,x) \rangle_{\mathcal{H}}$ for all $x\in X$ and $f \in \mathcal{H}$
+\end{itemize}
+\end{definition}
+\begin{corollary}[Reproducing kernels are kernels]
+Taking $\phi = k(\cdot,x) \in \mathcal{H}$ and $\mathcal{G} = \mathcal{H}$, $k$ is a kernel 
+\end{corollary}
+\begin{center}
+    Reproducing kernel $\implies$ kernel $\implies$ positive definite
+\end{center}
+\end{frame}
+
+
+\begin{frame}{Properties}
+\framesubtitle{Evaluation functional}
+
+\begin{proposition}[RKHS and Reproducing kernels]
+$$\mathcal{H} \text{ is a RKHS } \iff \mathcal{H} \text{ admits a reproducing kernel}$$
+Moreover, this correspondence is unique
+\end{proposition}
+{\setlength{\parskip}{1pt}
+%\footnotesize  
+Idea of the proof:
+
+$\implies$ Riesz Representation Theorem $f(x) = \delta_x(f) = \langle f, K_x \rangle$.
+
+Define $k(x,y) = \langle K_x, K_y\rangle$
+
+$\impliedby$ Reproducing property + Cauchy-Schwarz
+\[
+|f(x)| =|\langle f, k(\cdot, x) \rangle_\mathcal{H}| \leq \norm{f}_\mathcal{H} \underbrace{\norm{k(\cdot, x)}_\mathcal{H}}_{M}
+\]
+}
+
+\end{frame}
+\begin{frame}{Structure of the RKHS}
+\begin{theorem}[Moore–Aronszajn]
+Let $k: X \times X \to \mathbb{C}$ be positive-definite and hermitian. Then, $k$ is a reproducing kernel and there exists $\mathcal{H}$ RKHS whose kernel is $k$.
+\end{theorem}
+{\setlength{\parskip}{1pt}
+%\footnotesize  
+Idea of the proof:
+
+\textbf{Step 1:} Define $$\mathcal{H}_0 = \{f : \exists n \in \mathbb{N}, \{\alpha_i\}_{i=1}^n \subset \mathbb{C}, \{x_i\}_{i=1}^n \subset X, \ f(x) = \sum_{i=1}^n \alpha_i k(x, x_i)\}$$
+
+Define $\langle f, g \rangle = \langle \sum_{i=1}^n \alpha_i k(\cdot, x_i), \sum_{j=1}^m \beta_j k(\cdot, y_j) \rangle = \sum_{i=1}^n \sum_{j=1}^m \alpha_i \beta_j k(x_i, y_j)$  and show it is a pre-Hilbert space.
+
+\textbf{Step 2:}
+Complete $\mathcal{H}_0$ to $\mathcal{H}$ Hilbert space.
+
+Show that $\mathcal{H}_0$ is dense in $\mathcal{H}$.
+
+\textbf{Step 3:}
+Show that $K$ is a reproducing kernel of $\mathcal{H}$
+}
+\end{frame}
+
+\section{Part II: Examples and connection to frames}
+\begin{frame}{Paley-Wiener space}
+    Let $PW = \{f \in L^2(\mathbb{R}) : \ \text{supp } \hat f \subset [-\frac{1}{2}, \frac{1}{2}]\}$
+
+    The evaluation functional is continuous
+   $$\delta_x(f) = f(x) = \int_{-1/2}^{1/2} \hat f (\xi) e^{2\pi i \xi x} d\xi$$
+   \[ 
+   \begin{split}
+   |f(x)| & \leq \left(\int_{-1/2}^{1/2} |\hat f (\xi)|^2 d\xi \right)^{1/2} \\
+   & = (\langle \hat f, \hat f \rangle)^{1/2} \\
+   & = (\langle  f,  f \rangle)^{1/2} = \norm{f}
+   \end{split}
+   \]
+   We have already checked that
+   $$ f(x) = \int_{\mathbb{R}} f(y) sinc(x-y) dy = \langle f, sinc(x - \cdot) \rangle \; \forall x \in \mathbb{R}$$
+   $$\boxed{k(x,y) = sinc(x-y)}$$
+    
+\end{frame}
+\begin{frame}{Wavelets}
+    Let $\mathcal{H} = R(W_\psi) \subset L^2(\mathbb{R}^2, C_\psi^{-1}\frac{da db}{a^2})$. Let $F \in \mathcal{H}$, then $F = W_\psi f$ for some $f \in L^2(\mathbb{R})$.
+    
+    We proved in class that 
+    $$ \langle f, g \rangle = C(\phi, \psi)^{-1} \int_\mathbb{R}\int_\mathbb{R} {W_\phi f(a,b)} \overline{W_\psi g(a,b)} \frac{da db}{a^2} $$
+    Choosing $g(x) = T_b D_a \psi (x)$, then this implies
+    \[
+    \begin{split}
+F(a,b) & = \langle f, T_b D_a \phi \rangle  \\
+ & = C^{-1} \int_\mathbb{R} \int_\mathbb{R} W_\psi f (a',b') \overline{W_\psi (T_b D_a \psi) (a',b')} \frac{da' db'}{a'^2} \\
+ & = C^{-1} \int_\mathbb{R} \int_\mathbb{R} F(a',b') \overline{\underbrace{W_\psi (T_b D_a \psi) (a',b')}_{K(a',b'; a,b)}} \frac{da' db'}{a'^2} \\
+ & = \langle  F, K(\cdot, \cdot, a, b) \rangle_{L^2(\mathbb{R}^2, C_\psi^{-1}\frac{da db}{a^2})}
+\end{split}
+    \]
+\end{frame}
+
+\begin{frame}{Continuous frames}
+    
+\begin{definition}[Continuous frame]
+Let $\mathcal{H}$ be a Hilbert space and $(M, \mathcal{F}, \mu)$ a measure space with positive measure. The family $\{\phi_k\}_{k \in M }$ is a continuous frame iff
+\begin{enumerate}
+    \item The map $k \to \langle f, \phi _k \rangle$ is a measurable function on $M$.
+    \item For any $f \in \mathcal{H}$
+    $$ A \norm{f}^2_\mathcal{H} \leq \int_M |\langle f, \phi_k \rangle|^2 d\mu(k) \leq B \norm{f}^2_\mathcal{H}$$
+\end{enumerate}
+\end{definition}
+Remark 1: $M=\mathbb{N}$ and $\mu=$ counting measure recovers the usual definition of frame.
+
+Remark 2: the whole theory of frames can be reproduced with this approach. In particular, we have a dual frame $\{\widetilde\phi_k\}_{k \in M }$ so that 
+$$ f = \int_M \langle f, \phi_k \rangle \widetilde\phi_k d\mu(k) $$
+\end{frame}
+
+\begin{frame}{Frames and RKHS}
+\textbf{Examples of continuous frames: }
+
+$V_\phi f(p,q) = \langle f, M_q T_p \phi \rangle$, $p,q \in \mathbb{R}$
+
+$W_\phi f(a,b) = \langle f, T_b D_a \phi \rangle$, $a,b \in \mathbb{R}$
+
+    \textbf{The space $\mathcal{H} = R(T^*_\phi) 
+    $ % \subset \ell_2(\mathbb{N})$ 
+     is a RKHS}
+    
+    
+    
+    Let $\phi$ be a (continuous) frame and $\widetilde{\phi}$ its dual frame. 
+    
+
+    Let $c \in R(T^*_\phi)$, then $\exists f$ such that $T^*_\phi f = c$ and $T_{\widetilde{\phi}} c = f$. 
+    \vspace{-1em}
+    \[ 
+    \begin{split}
+        c(x)& = T^*_\phi T_{\widetilde{\phi}} c(x) \\
+        & = \langle T_{\widetilde{\phi}} c, \phi_x \rangle \\ 
+        & = \langle c, T_{\widetilde{\phi}}^* \phi_x \rangle \\ 
+        & = \langle c, K_x \rangle
+    \end{split}
+    \]\vspace{-1em}
+
+\end{frame}
+
+
+\begin{frame}{Frames and RKHS}
+   \begin{theorem}
+    Let $\phi$ be a (continuous) frame, then $R(T^*_\phi)$ is a RKHS with kernel
+    $$ k(x,y) = \langle \phi_x, \widetilde\phi_y \rangle$$
+   \end{theorem}
+
+
+
+\begin{theorem}
+    Let $\mathcal{H} \subset L^2(M, \mu)$ RKHS with kernel $k$. Then $\{K_x\}_{x\in M} = \{k(\cdot, x)\}_{x\in M}$ is a continuous Parseval frame of $L^2(M, \mu)$.
+\end{theorem}
+Proof:
+\[
+    \int_M |\langle f, K_x \rangle|^2 d\mu(x) = \int_M |f(x)|^2 d\mu(x) = \norm{f}_{L^2(M, \mu)}
+\]
+\end{frame}
+
+\begin{frame}[plain,c]
+%\frametitle{A first slide}
+
+\begin{center}
+\Huge Questions?
+\end{center}
+\end{frame}
+    
+\end{document}
+
+\begin{frame}{Kernels: how to construct them}
+
+Let $k_1, k_2, \dots k_n$ kernels and $\alpha, \alpha_1, \dots, \alpha_n  > 0$:
+    \begin{enumerate}
+        \item (trivial) $k(x,y) = \langle x, y \rangle$
+        \item (scaling and sum)  $k = k_1 + k_2$ and $k_\alpha = \alpha k$ 
+        \item (polynomials of positive coeff.) $k = \sum_{i=1}^n \alpha_i k_1^i$
+        \item (Taylor series of positive coeff.) $k = \sum_{i=1}^\infty \alpha_i k_1^i$. e.g.
+    \end{enumerate}
+\end{frame}
