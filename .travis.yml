@@ -1,11 +1,18 @@
+language: ruby
+
+services:
+  - docker
+
 before_install:
-- "sudo apt-get update && sudo apt-get install --no-install-recommends texlive-fonts-recommended texlive-latex-extra texlive-full texlive-fonts-extra texlive-latex-recommended dvipng"
+  - docker pull niccokunzmann/ci-latex
+
 script:
-- xelatex main.tex
+  - docker run -v "`pwd`:/slides" --rm -it niccokunzmann/ci-latex  bash -c 'cd slides; pdflatex main.tex'
+
 deploy:
   provider: releases
-  file:
-  - main.pdf
-  skip_cleanup: true
+  api_key:
+    secure: KfMCsKC3/ubfm04EX1CIHB7aY48f0vUUJUZ8qXo37b8SUOFeNAJSBjF4lSQuPeWnFWYxtnFRPYgTOh/fNVK3j7rcyQDGPmlLoJCkl7e8jU09qQuGMxvCN8m1AxtdneXj76jj/3L9K98qSdY4LFuTxKG3zscELEMm1s0xc3SMUEaCUdeSwQW5WClMFMNyCQWWZndDolxiezfU32OGNZivpDzVbOv2PupMkf7jJ01BCHEaET4RhXbgfOBLmfjwf88trBTNEoQIilTeHO+jUXbvNjDj2vhIO3AcAvSrOC5B1TcOJef4JTUWvJ2ptlDFtpMziSdND5XWfGeYxGLG+N/C9NC8K0RFY/w8wjjzT+NnuaaAGsfIK3iw9l3uIDjUTdpFAnaGNnwXAP5NvS0ONyAh05XmnkTiKo6q8QkuvOQb6W67USTS6RvYpExMfOo123sX8GFyo02QWsGDWNeCgJ7v0n52shr2aEvYF4m5O2ZuveigXtB/uwEnvXOkZrzcylcsgBH+Dh09sb7bBuJxR8DpRrcwo18m8iOL1OyoXgfCapnSag2DqCBBaBh9GYfPFU6MwvwR/g7DCpuI48HvKJgbJLQ4520gsvfD18gKx/0Z+IW4Lu4UjE8hNgJ9rTF+VO2YvPT417oJ7iZy0WOzvSjtNr/SbmGNkeizQSHbqX1jQ/k=
+  file: main.pdf
   on:
     tags: true
