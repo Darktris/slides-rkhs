@@ -116,7 +116,7 @@ Idea of the proof:
 
 $\implies$ Riesz Representation Theorem $f(x) = \delta_x(f) = \langle f, K_x \rangle$.
 
-Define $k(x,y) = \langle K_x, K_y\rangle$
+Define $k(x,y) = \langle K_y, K_x\rangle$
 
 $\impliedby$ Reproducing property + Cauchy-Schwarz
 \[
@@ -230,7 +230,7 @@ $W_\phi f(a,b) = \langle f, T_b D_a \phi \rangle$, $a,b \in \mathbb{R}$
 \begin{frame}{Frames and RKHS}
    \begin{theorem}
     Let $\phi$ be a (continuous) frame, then $R(T^*_\phi)$ is a RKHS with kernel
-    $$ k(x,y) = \langle \phi_x, \widetilde\phi_y \rangle$$
+    $$ k(x,y) = \langle \widetilde\phi_y , \phi_x \rangle$$
    \end{theorem}
 
 
@@ -240,7 +240,7 @@ $W_\phi f(a,b) = \langle f, T_b D_a \phi \rangle$, $a,b \in \mathbb{R}$
 \end{theorem}
 Proof:
 \[
-    \int_M |\langle f, K_x \rangle|^2 d\mu(x) = \int_M |f(x)|^2 d\mu(x) = \norm{f}_{L^2(M, \mu)}
+    \int_M |\langle f, K_x \rangle|^2 d\mu(x) = \int_M |f(x)|^2 d\mu(x) = \norm{f}^2_{L^2(M, \mu)}
 \]
 \end{frame}
 
